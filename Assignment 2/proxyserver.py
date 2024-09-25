@@ -48,6 +48,7 @@ def send_data(fro, to):
             break
         if cont_type != "image":
             out, temp = proxyclient.proxyClientAlterCont(chunk, temp)
+            
             to.send(out.encode('utf-8'))
         else:
             to.send(chunk.encode('utf-8'))
