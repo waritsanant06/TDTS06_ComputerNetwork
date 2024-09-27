@@ -6,10 +6,7 @@ import threading
 PORTNR = 54321
 BUFFER_SIZE = 4096
 
-def handle_client(client_sock):
-    """
-    Handles the client connection and forwards request to the server
-    """
+def handle_client(client_sock): #  Handles the client connection and forwards request to the server
     try:
         request = client_sock.recv(BUFFER_SIZE)
         print("BROWSER REQ:")
@@ -30,9 +27,7 @@ def handle_client(client_sock):
         print("Closed connection")
 
 def proxyserverstart():
-    """
-    Initiates proxy server, starts listening and handles multiple clients
-    """
+
     server_socket = socket.socket()
     server_socket.bind(('127.0.0.1', PORTNR))
     server_socket.listen(5)

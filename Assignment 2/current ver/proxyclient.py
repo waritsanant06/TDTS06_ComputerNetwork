@@ -1,21 +1,17 @@
-
 import socket
+import re
 
 PORT = 80
-BUFFER_SIZE = 8192  # Increased buffer size for better performance
+BUFFER_SIZE = 8192  
 
-def proxyClientSendRequest(request):
-    """
-    Forwards HTTP request to the internet and alters the request URL and content if necessary
-    """
+def proxyClientSendRequest(request): #Forwards HTTP request to the internet and alters the request URL and content if necessary
+    
     request_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     request_socket.settimeout(10)  # Set a timeout to prevent hanging
 
     request_str = request.decode()
 
-    # Alter the request URL (if it's referencing an image or similar)
-    request_str = request_str.replace('smiley.jpg', 'trolly.jpg')
-    request_str = request_str.replace("Stockholm.jpg", "Linköping.jpg")
+    print(f"request = {request_str}")
 
     host_pos = request_str.lower().find("host:")
     host = request_str[host_pos:].split()[1].split(":")[0]
@@ -31,10 +27,8 @@ def proxyClientSendRequest(request):
         return None
 
 
-def get_server_chunk(socket):
-    """
-    Receives a response from the server and handles chunked transfer encoding and encoding issues
-    """
+def get_server_chunk(socket): # Receives a response from the server and handles chunked transfer encoding and encoding issues
+
     response_data = b""
     try:
         while True:
@@ -52,10 +46,8 @@ def get_server_chunk(socket):
         print(f"Error receiving data from server: {e}")
         return ""
 
-def decode_chunked_response(response_data):
-    """
-    Decodes chunked response data and assembles the full response
-    """
+def decode_chunked_response(response_data): # Decodes chunked response data and assembles the full response
+
     response_str = response_data.decode('utf-8', errors='ignore')  # Decode the full response ignoring errors for now
     headers, body = response_str.split("\r\n\r\n", 1)  # Split headers and body
     decoded_body = ""
@@ -70,10 +62,9 @@ def decode_chunked_response(response_data):
 
     return headers + "\r\n\r\n" + decoded_body
 
-def proxyClientAlterCont(response):
-    """
-    Alters the content of the response and updates Content-Length header based on content type
-    """
+
+def proxyClientAlterCont(response): # make fake news
+
     print("Altering content...")
 
     # Split the HTTP response into headers and body
@@ -85,12 +76,13 @@ def proxyClientAlterCont(response):
     headers = response[:header_end_pos]
     body = response[header_end_pos + 4:]  # +4 to skip the \r\n\r\n separator
 
-    # Determine if the content is text-based (e.g., text/html, text/plain)
-    if "content-type: text/" in headers.lower():
-        altered_body = body.replace("Stockholm", "Linköping").replace("smiley", "trolly").replace("Smiley", "Trolly")
-    else:
-        # Do not alter binary or non-text content
-        altered_body = body
+    def replace_outside_img_tags(match):
+        text = match.group(0)
+        text = text.replace("Stockholm", "Linköping")
+        return text
+
+    altered_body = re.sub(r'>([^<]+)<', replace_outside_img_tags, body) # change the Stockholm -> Linkoping only not in the image tag
+    altered_body = altered_body.replace("smiley", "trolly").replace("Smiley", "Trolly") # change smiley-> trolly every where
 
     # Update Content-Length in the headers if present
     headers = update_content_length(headers, altered_body)
@@ -100,10 +92,10 @@ def proxyClientAlterCont(response):
 
     return new_response
 
-def update_content_length(headers, altered_body):
-    """
-    Updates the Content-Length header based on the new altered body length
-    """
+
+def update_content_length(headers, altered_body): # Updates the Content-Length header based on the new altered body length
+
+
     content_length_pos = headers.lower().find("content-length:")
     if content_length_pos != -1:
         # Extract the original Content-Length
