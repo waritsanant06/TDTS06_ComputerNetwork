@@ -78,6 +78,8 @@ class Proxy:
             content = response[len(header)-1:-1].decode()
             print("--------------------------altering content----------------------------")
             content, count = alterdata(content, " Stockholm", " Linköping")
+            content, count = alterdata(content, " Course", " ABCDE")
+
             content, count = alterdata(content, " smiley", " trolly")
             content, count = alterdata(content, " Smiley", " Trolly")
 
