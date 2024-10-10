@@ -73,6 +73,7 @@ should not have to, and you defeinitely should not have to modify
 
   RouterSimulator()                         /* initialize the simulator */
   {
+    System.out.println(POISONREVERSE);
     double sum, avg;
     Event evptr;
 

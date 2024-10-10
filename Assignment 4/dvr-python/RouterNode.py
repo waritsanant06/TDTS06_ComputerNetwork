@@ -4,6 +4,7 @@ from RouterSimulator import RouterSimulator
 from GuiTextArea import GuiTextArea
 from RouterPacket import RouterPacket
 from copy import deepcopy
+from F import F
 
 INFTY: int
 N: int
@@ -94,14 +95,28 @@ class RouterNode:
 
     def printDistanceTable(self):
         self.myGUI.println(f"Routing table for {self.ID} at {self.sim.getClocktime()}")
-        self.myGUI.println("-----------------")
+        self.myGUI.println('_'* 40 )        
+        self.myGUI.println(f'{F.format("",10)} | {F.format("0", 5) } | {F.format("1", 5) } | {F.format("2", 5) } | ' )           
+        self.myGUI.println('_'* 40 )
+
         for n in range(N):
-            self.myGUI.print(f"{n}:  ")
+            self.myGUI.print(f'{F.format(n,10)} | ')
             for m in range(N):
-                self.myGUI.print(f"{self.distances[n][m]} | ")
+                self.myGUI.print(f"{F.format(self.distances[n][m],5)} | ")
+
             self.myGUI.println("")
-        self.myGUI.println(f"Routes: {self.ID}: {self.routes}")
-        self.myGUI.println("-----------------")
+
+        
+        self.myGUI.println('_'* 40 )
+
+
+        self.myGUI.println(f'{F.format("Costs",10)} | {F.format(self.distances[self.ID][0], 5) } | {F.format(self.distances[self.ID][1], 5) } | {F.format(self.distances[self.ID][2], 5) } | ' )
+        self.myGUI.println(f'{F.format("Routes",10)} | {F.format(self.routes[0], 5) } | {F.format(self.routes[1], 5) } | {F.format(self.routes[2], 5) } | ' )
+
+        
+   
+        self.myGUI.println('_'* 40 )
+        self.myGUI.println('_'* 40 )
 
     # Sends our updated distance vector to all neighbors
     def sendUpdates(self):
