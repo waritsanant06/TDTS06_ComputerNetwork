@@ -95,9 +95,13 @@ class RouterNode:
 
     def printDistanceTable(self):
         self.myGUI.println(f"Routing table for {self.ID} at {self.sim.getClocktime()}")
-        self.myGUI.println('_'* 40 )        
-        self.myGUI.println(f'{F.format("",10)} | {F.format("0", 5) } | {F.format("1", 5) } | {F.format("2", 5) } | ' )           
-        self.myGUI.println('_'* 40 )
+        self.myGUI.println(f"poison reverse = {self.sim.POISONREVERSE}")
+        self.myGUI.println('_'* (12+(8*N)) )        
+        self.myGUI.print(f'{F.format("",10)} | ')
+        for i in range(N):
+            self.myGUI.print(f'{F.format(i, 5) } | ')
+        self.myGUI.println('')
+        self.myGUI.println('_'* (12+(8*N)) )        
 
         for n in range(N):
             self.myGUI.print(f'{F.format(n,10)} | ')
@@ -107,16 +111,22 @@ class RouterNode:
             self.myGUI.println("")
 
         
-        self.myGUI.println('_'* 40 )
+        self.myGUI.println('_'* (12+(8*N)) )        
 
+        self.myGUI.println('')
+        self.myGUI.print(f'{F.format("Costs",10)} | ')
+        for i in range(N):
+            self.myGUI.print(f'{F.format(self.distances[self.ID][i], 5) } | ')
+        self.myGUI.println('')
 
-        self.myGUI.println(f'{F.format("Costs",10)} | {F.format(self.distances[self.ID][0], 5) } | {F.format(self.distances[self.ID][1], 5) } | {F.format(self.distances[self.ID][2], 5) } | ' )
-        self.myGUI.println(f'{F.format("Routes",10)} | {F.format(self.routes[0], 5) } | {F.format(self.routes[1], 5) } | {F.format(self.routes[2], 5) } | ' )
+        self.myGUI.print(f'{F.format("Routes",10)} | ')
+        for i in range(N):
+            self.myGUI.print(f'{F.format(self.routes[i], 5) } | ')
 
-        
-   
-        self.myGUI.println('_'* 40 )
-        self.myGUI.println('_'* 40 )
+        self.myGUI.println('')
+
+        self.myGUI.println('_'* (12+(8*N)) )        
+        self.myGUI.println('_'* (12+(8*N)) )        
 
     # Sends our updated distance vector to all neighbors
     def sendUpdates(self):
